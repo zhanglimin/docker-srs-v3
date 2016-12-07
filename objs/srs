@@ -1,0 +1,47 @@
+#!/bin/bash
+REPO=aesirteam/docker-srs
+TAG=v1
+D_RTMP_PORT=1935
+D_HTTPAPI_PORT=1985
+
+usage() {
+  echo "USAGE: ./objs/srs [-p RTMP_PORT] [-a HTTP_API_PORT] -c CONFIG_FILE"
+  echo "example: ./objs/srs -p 1935 -a 1985 -c conf/default.conf"
+}
+
+if [ $# -lt 1 ]; then
+   usage
+   exit 1
+fi
+
+while getopts ":p:a:c:" arg
+do
+    case $arg in
+       p)
+	   D_RTMP_PORT=$OPTARG
+	   ;;
+       a)
+	   D_HTTPAPI_PORT=$OPTARG
+	   ;;
+       c)
+	   if [ ! -f $OPTARG ]; then
+              echo "Cannot access $OPTARG: No such file or directory"
+   	      exit 1
+           fi
+	   D_VOLUME_PATH=`echo $PWD/$OPTARG | awk -F '/[^/]*$' '{print $1}'`
+	   D_CONFIG_FILE=`echo $OPTARG | awk '{sub(/.*\//,"/etc/srs/"); print}'`
+	   ;;
+       ?)
+           usage
+           exit 1
+           ;;
+    esac
+done
+
+#echo $D_RTMP_PORT
+#echo $D_HTTPAPI_PORT
+#echo $D_CONFIG_FILE
+#echo $D_VOLUME_PATH
+
+#run docker image
+sudo docker run -d -v $D_VOLUME_PATH:/etc/srs -p $D_RTMP_PORT:1935 -p $D_HTTPAPI_PORT:1985 $REPO:$TAG -c $D_CONFIG_FILE
