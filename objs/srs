@@ -28,7 +28,7 @@ do
               echo "Cannot access $OPTARG: No such file or directory"
    	      exit 1
            fi
-	   D_VOLUME_PATH=`echo $PWD/$OPTARG | awk -F '/[^/]*$' '{print $1}'`
+	   D_VOLUME_PATH=`echo $OPTARG | awk -F '/[^/]*$' '{print $1}'`
 	   D_CONFIG_FILE=`echo $OPTARG | awk '{sub(/.*\//,"/etc/srs/"); print}'`
 	   ;;
        ?)
@@ -37,6 +37,10 @@ do
            ;;
     esac
 done
+
+if [ ${D_VOLUME_PATH:0:1} != "/" ]; then
+    D_VOLUME_PATH=$PWD/$D_VOLUME_PATH
+fi
 
 #echo $D_RTMP_PORT
 #echo $D_HTTPAPI_PORT
