@@ -1,0 +1,76 @@
+#!/bin/bash
+REPO=aesirteam/docker-srs
+TAG=v1
+D_RTMP_PORT=1935
+D_HTTPAPI_PORT=1985
+S_RESET_FLAG=0
+
+usage() {
+  echo "USAGE: ./shutdown -s <SERVER_PERFIX> [-p RTMP_PORT] [-a HTTP_API_PORT] [-r]"
+  echo "remark:  -r    delete SERVER_PERFIX_[?] directory"
+  echo "example: ./shutdown -s srs-server -p 1935 -a 1985"
+  echo "         ./shutdown -s myServer -p 1935:1940 -r"
+}
+
+main() {
+   RTMP_START_PORT=$((10#`echo $D_RTMP_PORT | cut -d \: -f1`))
+   RTMP_END_PORT=$((10#`echo $D_RTMP_PORT | cut -d \: -f2`))
+   API_START_PORT=$((10#`echo $D_HTTPAPI_PORT | cut -d \: -f1`))
+   API_END_PORT=$((10#`echo $D_HTTPAPI_PORT | cut -d \: -f2`))
+   _SERVER_NAME=$D_SERVER_NAME
+   for((D_RTMP_PORT=$RTMP_START_PORT, D_HTTPAPI_PORT=$API_START_PORT; \
+       $D_RTMP_PORT<=$RTMP_END_PORT; \
+       D_RTMP_PORT++,D_HTTPAPI_PORT++))
+   do
+        D_SERVER_NAME=$_SERVER_NAME"_"$D_RTMP_PORT"_"$D_HTTPAPI_PORT
+:<<!	
+	echo $D_SERVER_NAME"  "$D_RTMP_PORT"  "$D_HTTPAPI_PORT
+	echo `dirname $PWD/$0`"/"$D_SERVER_NAME/conf:$TARGET_DIR/conf
+!
+        #get dokcer container id
+	CONTAINER_ID=`sudo docker ps -f name=$D_SERVER_NAME | grep $REPO:$TAG | awk '{print $1}'`
+
+	#stop and rm docker container
+	sudo docker stop $CONTAINER_ID | xargs sudo docker rm
+	
+	#delet server_? directory
+	if [ "$S_RESET_FLAG" -eq "1" ]; then
+	   sudo rm -rf $D_SERVER_NAME
+	fi
+   done
+}
+
+
+if [ $# -lt 1 ]; then
+   usage
+   exit 1
+fi
+
+while getopts ":s:p:a:r" arg
+do
+    case $arg in
+       s)
+	   D_SERVER_NAME=$OPTARG
+           ;;
+       p)
+	   D_RTMP_PORT=$OPTARG
+	   ;;
+       a)
+	   D_HTTPAPI_PORT=$OPTARG
+	   ;;
+	r)
+	   S_RESET_FLAG=1 
+	   ;;
+       ?)
+           usage
+           exit 1
+           ;;
+    esac
+done
+
+if [ "$D_SERVER_NAME" == "" ]; then
+   usage
+   exit 1
+fi
+
+main
