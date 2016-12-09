@@ -1,6 +1,9 @@
 #Build docker image
 ###
    ./Buildit
+#Pull docker image
+###
+   sudo docker pull aesirteam/docker-srs:v1
 #Startup docker image
 ###
    ./startup -s server -p 1935:1940<br>
