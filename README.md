@@ -4,7 +4,7 @@
 #Pull docker image
 ###
    sudo docker pull aesirteam/docker-srs:v1
-#Startup docker image
+#Startup docker container
 ###
    ./startup -s server -p 1935:1940<br>
    or<br>
@@ -15,7 +15,7 @@
       -p       rtmp port or range(start_port:end_port) default:1935<br>
       -a       http api port or range(start_port:end_port) default:1985<br>
       -c       srs config file default:conf/default.conf<br>
-#Stop docker image
+#Stop docker container
 ###
    ./shutdown -s server -p 1935:1940 -r<br>
    <br>
