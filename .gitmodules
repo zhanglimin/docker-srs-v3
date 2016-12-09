@@ -1,7 +1,3 @@
-[submodule "srs"]
-	path = src/srs
-	url = http://github.com/aesirteam/srs.git
-	branch = develop
 [submodule "src/srs"]
 	path = src/srs
 	url = http://github.com/aesirteam/srs.git
