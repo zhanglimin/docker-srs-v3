@@ -1,5 +1,5 @@
 FROM debian:latest
-#FROM resin/rpi-raspbian:jessie
+#FROM resin/rpi-raspbian:wheezy
 
 MAINTAINER Aesirteam "zhongkui@139.com"
 ENV TARGET_DIR /usr/local/srs
@@ -12,7 +12,8 @@ ADD src/  /usr/src/
 
 RUN apt-get update
 RUN apt-get install -y --force-yes --no-install-recommends sudo libpcre3 zlib1g && \
-    apt-get install -y --force-yes --no-install-recommends build-essential libpcre3-dev zlib1g-dev make unzip python
+    apt-get install -y --force-yes --no-install-recommends build-essential libpcre3-dev zlib1g-dev make unzip python && \
+    rm -rf /var/lib/apt/lists/*
 
 
 WORKDIR /usr/src/srs/trunk
@@ -25,8 +26,9 @@ WORKDIR $TARGET_DIR
 
 RUN \
    rm -rf /usr/src/srs conf/*.conf && \
-   apt-get remove -y --force-yes --purge --auto-remove build-essential libpcre3-dev zlib1g-dev make unzip python && \
-   rm -rf /var/lib/apt/lists/* && apt-get clean
+   apt-get purge -y --force-yes --auto-remove build-essential libpcre3-dev zlib1g-dev make unzip python && \
+   #apt-get remove -y --force-yes --purge --auto-remove build-essential libpcre3-dev zlib1g-dev make unzip python && \
+   apt-get clean
 
 EXPOSE 1935 1985
 
