@@ -1,6 +1,7 @@
 #!/bin/bash
-REPO=aesirteam/docker-srs
-TAG=v1
+REPO=aesirteam/docker-srs-v3
+TAG=latest
+#TAG=raspbian
 
 #stop docker process
 sudo docker ps -a | grep $REPO:$TAG | awk '{print $1}' | while read cid
@@ -10,7 +11,10 @@ do
 done
 
 #remove docker image
-sudo docker rmi $REPO:$TAG
+sudo docker images -a | grep $REPO:$TAG | awk '{print $1}' | while read iid
+do
+  sudo docker rmi $iid
+done
 
 git submodule update --init --recursive
 

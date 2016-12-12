@@ -1,5 +1,5 @@
 FROM debian:latest
-#FROM resin/rpi-raspbian:latest
+#FROM resin/rpi-raspbian:jessie
 
 MAINTAINER Aesirteam "zhongkui@139.com"
 ENV TARGET_DIR /usr/local/srs
@@ -26,7 +26,7 @@ WORKDIR $TARGET_DIR
 RUN \
    rm -rf /usr/src/srs conf/*.conf && \
    apt-get remove -y --force-yes --purge --auto-remove build-essential libpcre3-dev zlib1g-dev make unzip python && \
-   rm -rf /var/lib/apt/lists/*
+   rm -rf /var/lib/apt/lists/* && apt-get clean
 
 EXPOSE 1935 1985
 

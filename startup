@@ -1,6 +1,7 @@
 #!/bin/bash
-REPO=aesirteam/docker-srs
-TAG=v1
+REPO=aesirteam/docker-srs-v3
+TAG=latest
+#TAG=raspbian
 D_RTMP_PORT=1935
 D_HTTPAPI_PORT=1985
 S_CONFIG_FILE=conf/default.conf
