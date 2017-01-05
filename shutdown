@@ -1,16 +1,15 @@
 #!/bin/bash
 REPO=aesirteam/docker-srs-v3
 TAG=latest
-#TAG=raspbian
 D_RTMP_PORT=1935
 D_HTTPAPI_PORT=1985
 S_RESET_FLAG=0
 
 usage() {
-  echo "USAGE: ./shutdown -s <SERVER_PERFIX> [-p RTMP_PORT] [-a HTTP_API_PORT] [-r]"
+  echo "USAGE: $0 [-t raspbian] -s <SERVER_PERFIX> [-p RTMP_PORT] [-a HTTP_API_PORT] [-r]"
   echo "remark:  -r    delete SERVER_PERFIX_[?] directory"
-  echo "example: ./shutdown -s srs-server -p 1935 -a 1985"
-  echo "         ./shutdown -s myServer -p 1935:1940 -r"
+  echo "example: $0 -s srs-server -p 1935 -a 1985"
+  echo "         $0 -t raspbian -s myServer -p 1935:1940 -r"
 }
 
 main() {
@@ -47,9 +46,14 @@ if [ $# -lt 1 ]; then
    exit 1
 fi
 
-while getopts ":s:p:a:r" arg
+while getopts ":t:s:p:a:r" arg
 do
     case $arg in
+        t)
+           if [ "$OPTARG" = "raspbian" ]; then
+  	     TAG=$OPTARG
+           fi
+	   ;;
        s)
 	   D_SERVER_NAME=$OPTARG
            ;;
@@ -69,7 +73,7 @@ do
     esac
 done
 
-if [ "$D_SERVER_NAME" == "" ]; then
+if [ -n $D_SERVER_NAME ]; then
    usage
    exit 1
 fi

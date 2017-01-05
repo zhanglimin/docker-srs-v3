@@ -1,16 +1,15 @@
 #!/bin/bash
 REPO=aesirteam/docker-srs-v3
 TAG=latest
-#TAG=raspbian
 D_RTMP_PORT=1935
 D_HTTPAPI_PORT=1985
 S_CONFIG_FILE=conf/default.conf
 TARGET_DIR=/usr/local/srs
 
 usage() {
-  echo "USAGE: ./startup -s <SERVER_PERFIX> [-p RTMP_PORT] [-a HTTP_API_PORT] [-c CONFIG_FILE]"
-  echo "example: ./startup -s srs-server -p 1935 -a 1985 -c /etc/default.conf"
-  echo "         ./startup -s myServer -p 1935:1940"
+  echo "USAGE: $0 [-t raspbian] -s <SERVER_PERFIX> [-p RTMP_PORT] [-a HTTP_API_PORT] [-c CONFIG_FILE]"
+  echo "example: $0 -s srs-server -p 1935 -a 1985 -c /etc/default.conf"
+  echo "         $0 -t raspbian -s myServer -p 1935:1940"
 }
 
 main() {
@@ -40,6 +39,7 @@ main() {
           -v $SERVER_DATA_PATH/logs:$TARGET_DIR/logs \
           -p $D_RTMP_PORT:1935 \
           -p $D_HTTPAPI_PORT:1985 \
+	  --restart=always \
           --name $D_SERVER_NAME $REPO:$TAG
    done
 }
@@ -50,9 +50,14 @@ if [ $# -lt 1 ]; then
    exit 1
 fi
 
-while getopts ":s:p:a:c:" arg
+while getopts ":t:s:p:a:c:" arg
 do
     case $arg in
+       t)
+           if [ "$OPTARG" = "raspbian" ]; then
+  	     TAG=$OPTARG
+           fi
+	   ;;
        s)
 	   D_SERVER_NAME=$OPTARG
            ;;
@@ -72,7 +77,7 @@ do
     esac
 done
 
-if [ "$D_SERVER_NAME" == "" ]; then
+if [ -n $D_SERVER_NAME ]; then
    usage
    exit 1
 fi

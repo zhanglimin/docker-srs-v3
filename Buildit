@@ -1,7 +1,21 @@
 #!/bin/bash
+
+usage() {
+    echo "Usage: $0 <debian|raspbian>"
+    exit 1
+}
+
 REPO=aesirteam/docker-srs-v3
-TAG=latest
-#TAG=raspbian
+
+if [ "$1" = "raspbian" ]; then
+  TAG=$1
+  DOCKERFILE="-f Dockerfile-raspbian"
+elif [ "$1" = "debian" ]; then
+  TAG=latest
+else
+   usage
+   exit 1
+fi
 
 #stop docker process
 sudo docker ps -a | grep $REPO:$TAG | awk '{print $1}' | while read cid
@@ -19,7 +33,4 @@ done
 git submodule update --init --recursive
 
 #build docker image
-sudo docker build -t=$REPO:$TAG .
-
-#run docker image
-#sudo docker run -d -v conf:/etc/srs/ -p 1935:1935 -p 1985:1985 $REPO:$TAG
+sudo docker build $DOCKERFILE -t=$REPO:$TAG .
