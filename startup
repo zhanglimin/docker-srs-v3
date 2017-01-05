@@ -77,7 +77,7 @@ do
     esac
 done
 
-if [ -n $D_SERVER_NAME ]; then
+if [ "$D_SERVER_NAME"x = "x" ]; then
    usage
    exit 1
 fi
