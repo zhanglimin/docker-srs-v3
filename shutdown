@@ -33,7 +33,7 @@ main() {
 	#stop and rm docker container
 	sudo docker stop $CONTAINER_ID | xargs sudo docker rm
 	
-	#delet server_? directory
+	#delete server_? directory
 	if [ "$S_RESET_FLAG" -eq "1" ]; then
 	   sudo rm -rf $D_SERVER_NAME
 	fi
@@ -63,7 +63,7 @@ do
        a)
 	   D_HTTPAPI_PORT=$OPTARG
 	   ;;
-	r)
+       r)
 	   S_RESET_FLAG=1 
 	   ;;
        ?)
