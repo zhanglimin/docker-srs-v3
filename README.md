@@ -5,7 +5,9 @@
    ./Buildit raspbian
 #Pull docker image
 ###
-   sudo docker pull aesirteam/docker-srs:v1
+   sudo docker pull aesirteam/docker-srs-v3<br>
+   or
+   sudo docker pull aesirteam/docker-srs-v3:raspbian
 #Startup docker container
 ###
    ./startup -s server -p 1935:1940<br>
